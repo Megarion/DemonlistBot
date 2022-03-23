@@ -1,7 +1,0 @@
-{
-    "trueResult": ":ballot_box_with_check: Yes",
-    "falseResult": ":negative_squared_cross_mark: No",
-    "unclearResult": ":question: None",
-    "backtick": "\u0060",
-    "newline": "\n"
-}
