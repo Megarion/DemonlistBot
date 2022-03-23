@@ -72,20 +72,6 @@ async function info(interaction) {
 	const url = `https://pointercrate.com/api/v2/demons/listed?after=${param.from}&limit=${param.limit}`;
 
 	// boutta get those demons
-	// https://pointercrate.com/api/v2/demons/listed?after=<number>&limit=<number>
-
-	/* EXAMPLE RESPONSE
-		{
-			id: 379,
-			position: 3,
-			name: 'Firework',
-			requirement: 49,
-			video: 'https://www.youtube.com/watch?v=QBe5x2o9v2w',
-			publisher: { id: 36915, name: 'Trick', banned: false },
-			verifier: { id: 36915, name: 'Trick', banned: false },
-			level_id: 75206202
-		},
-	*/
 
 	const result = await fetch(url)
 		.then(res => res.json())

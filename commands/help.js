@@ -5,6 +5,13 @@ const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { demonButton, coin } = require('../data/emojis.json');
 const { backtick, newline } = require("../data/text.json");
 
+/*
+	For embeds: 
+	- RED = Error
+	- YELLOW = List
+	- GREEN = Info
+*/
+
 function info(interaction) {
 	const timestamp = new Date().getTime();
 

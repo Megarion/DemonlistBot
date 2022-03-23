@@ -1,7 +1,7 @@
 // @ts-check
 
 const { SlashCommandBuilder } = require('@discordjs/builders');
-const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js')
+const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { default: fetch } = require('node-fetch');
 
 const { trueResult, falseResult, unclearResult, backtick, newline } = require("../data/text.json");
@@ -59,20 +59,6 @@ async function info(interaction) {
 	const url = `https://pointercrate.com/api/v2/demons/listed?after=${param.from}&limit=${param.limit}`;
 
 	// boutta get those demons
-	// https://pointercrate.com/api/v2/demons/listed?after=<number>&limit=<number>
-
-	/* EXAMPLE RESPONSE
-		{
-			id: 379,
-			position: 3,
-			name: 'Firework',
-			requirement: 49,
-			video: 'https://www.youtube.com/watch?v=QBe5x2o9v2w',
-			publisher: { id: 36915, name: 'Trick', banned: false },
-			verifier: { id: 36915, name: 'Trick', banned: false },
-			level_id: 75206202
-		},
-	*/
 
 	const result = await fetch(url)
 		.then(res => res.json())
@@ -80,56 +66,13 @@ async function info(interaction) {
 
 	const inGameURL = `https://gdbrowser.com/api/level/${result[0].level_id}`;
 
-	// get these in game stats
-	// https://gdbrowser.com/api/level/<id>
-
-	/* EXAMPLE RESPONSE
-		{
-			"name": "Nine Circles",
-			"id": "4284013",
-			"description": "Easy",
-			"author": "Zobros",
-			"playerID": "957447",
-			"accountID": "2379",
-			"difficulty": "Hard Demon",
-			"downloads": 30523740,
-			"likes": 1898461,
-			"disliked": false,
-			"length": "Long",
-			"stars": 10,
-			"orbs": 500,
-			"diamonds": 12,
-			"featured": true,
-			"epic": false,
-			"gameVersion": "2.0",
-			"editorTime": 0,
-			"totalEditorTime": 0,
-			"version": 5,
-			"copiedID": "0",
-			"twoPlayer": false,
-			"officialSong": 0,
-			"customSong": 533927,
-			"coins": 3,
-			"verifiedCoins": true,
-			"starsRequested": 0,
-			"ldm": false,
-			"objects": 0,
-			"large": false,
-			"cp": 2,
-			"difficultyFace": "demon-hard-featured",
-			"songName": "NK - Nine Circles",
-			"songAuthor": "Rukkus",
-			"songSize": "7.76MB",
-			"songID": 533927,
-			"songLink": "http://audio.ngfiles.com/533000/533927_NK---Nine-Circles.mp3"
-		}
-	*/
+	// get in game stats
 
 	const inGame = await fetch(inGameURL)
 		.then(res => res.json())
 		.catch(err => err);
 
-	return embed(interaction, param, result, inGame);
+	return [embed(interaction, param, result, inGame), result[0].id];
 }
 
 module.exports = {
@@ -149,17 +92,19 @@ module.exports = {
 			.setLabel('View this level!')
 			.setStyle('LINK')
 			.setEmoji(demonButton)
-			.setURL('https://pointercrate.com/demonlist/');
-
-		const row = new MessageActionRow()
-			.addComponents(
-				viewButton
-			);
 		
 		// @ts-ignore
 		await interaction.reply(`<@${interaction.user.id}> Working on it...`);
-		let result = await info(interaction);
+		let result = await info(interaction); // Embed, Pointercrate ID
+
+		viewButton.setURL(`https://megarion.github.io/DemonlistBot/pointercrate.html?type=demon&id=${result[1]}`);
+
+		const row = new MessageActionRow()
+		.addComponents(
+			viewButton
+		);
+
 		// @ts-ignore
-		await interaction.editReply({ content: "Done!", embeds: [result], components: [row], ephemeral: false });
+		await interaction.editReply({ content: "Done!", embeds: [result[0]], components: [row], ephemeral: false });
 	}
 };
