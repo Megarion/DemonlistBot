@@ -13,27 +13,32 @@ const { backtick, newline } = require("../data/text.json");
 */
 
 function info(interaction) {
-	const timestamp = new Date().getTime();
+	try {
+		const timestamp = new Date().getTime();
 
-	const requestUser = interaction.user;
+		const requestUser = interaction.user;
 
-	const infoEmbed = new MessageEmbed()
-		.setTitle("PlayerlistBot")
-		.setDescription("A bot to view the Geometry Dash Playerlist!")
-		.setThumbnail('https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png')
-		.setColor("BLUE")
-		.setTimestamp()
-		.setFooter({ text: `Help information` });
+		const infoEmbed = new MessageEmbed()
+			.setTitle("DemonlistBot")
+			.setDescription("A bot to view the Geometry Dash Demonlist!")
+			.setThumbnail('https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png')
+			.setColor("BLUE")
+			.setTimestamp()
+			.setFooter({ text: `Help information` });
 
-	// infoEmbed.addField('COMMANDS', "", false);
+		// infoEmbed.addField('COMMANDS', "", false);
 
-	return infoEmbed;
+		return infoEmbed;
+	} catch (err) {
+		console.log(err);
+		interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+	}
 }
 
 module.exports = {
 	data: new SlashCommandBuilder()
 		.setName('help')
-		.setDescription('PlayerlistBot information'),
+		.setDescription('DemonlistBot information'),
 	/**
 	 * @param {{ reply: (arg0: { embeds: MessageEmbed[]; components: MessageActionRow[]; ephemeral: boolean; }) => any; }} interaction
 	 */
@@ -41,7 +46,7 @@ module.exports = {
 		const row = new MessageActionRow()
 			.addComponents(
 				new MessageButton()
-					.setLabel('Playerlist')
+					.setLabel('Demonlist')
 					.setStyle('LINK')
 					.setEmoji(demonFace)
 					.setURL('https://pointercrate.com/demonlist/'),
@@ -53,7 +58,7 @@ module.exports = {
 				new MessageButton()
 					.setLabel('GitHub')
 					.setStyle('LINK')
-					.setURL('https://github.com/Megarion/PlayerlistBot'),
+					.setURL('https://github.com/Megarion/DemonlistBot'),
 			);
 
 		return interaction.reply({ embeds: [info(interaction)], components: [row], ephemeral: true });

@@ -7,60 +7,187 @@ const { default: fetch } = require('node-fetch');
 const { trueResult, falseResult, unclearResult, backtick, newline } = require("../data/text.json");
 const { demonButton, top3, top5, top10, mainList, legacyList, extendedList, like, dislike, download, time, silvercoin, bronzecoin } = require('../data/emojis.json');
 
-function embed(interaction, param, data, gameData) {
-	const timestamp = new Date().getTime();
+function embed(interaction, param, dataMin, data) {
+	try {
+		const timestamp = new Date().getTime();
 
-	const requestUser = interaction.user;
+		const requestUser = interaction.user;
 
-	const player = data[0];
+		const player = data;
 
-	const infoEmbed = new MessageEmbed()
-		.setTitle("List player information")
-		.setAuthor({ name: `${requestUser.username}`, iconURL: requestUser.avatarURL() })
-		.setThumbnail('https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/difficulties/player-extreme-epic.png')
-		.setColor("GREEN")
-		.setTimestamp()
+		const infoEmbed = [];
+		infoEmbed.push(
+			new MessageEmbed()
+				.setTitle("List player information")
+				.setAuthor({ name: `${requestUser.username}`, iconURL: requestUser.avatarURL() })
+				.setThumbnail('https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/difficulties/demon-extreme-epic.png')
+				.setColor("GREEN")
+				.setDescription(`Viewing player **#${param.from + 1}** ${player.banned ? `(:no_entry_sign: ${backtick}Banned${backtick})` : ""}`)
+		);
 
-	if (data.length == 0) {
-		infoEmbed.setDescription(`Player **#${param.from + 1}** doesn't exist!`)
-			.setColor("RED");
+		if (data.length == 0) {
+			infoEmbed[0].setDescription(`Player **#${param.from + 1}** doesn't exist!`)
+				.setColor("RED");
+			return infoEmbed;
+		}
+
+		infoEmbed[0].addField(`Name`, `**${player.name}**`, true);
+		infoEmbed[0].addField(`List points`, `${dataMin[0].score.toFixed(2)}`, true);
+		infoEmbed[0].addField(`Nationality`, `${player.nationality == null ? unclearResult : ":flag_" + player.nationality.country_code.toLowerCase() + ": " + player.nationality.nation}`, true);
+
+		let completedRecords = [];
+		let uncompletedRecords = [];
+		for (let i = 0; i < player.records.length; i++) {
+			const record = player.records[i];
+			if (record.progress == 100) {
+				completedRecords.push(record);
+			} else {
+				uncompletedRecords.push(record);
+			}
+		}
+
+		// 45 demons per embed!
+		// 3 for demons beaten, 1 for verified, created, uncompleted demons
+		// will increase these numbers if there are like a billion demons
+
+		completedRecords = completedRecords.reverse();
+		uncompletedRecords = uncompletedRecords.reverse();
+
+		function mapRecords(recordsList) {
+			return `>${recordsList.map(record => ` ${record.demon.position > 150 ? record.demon.name : "**" + record.demon.name + "**"}`)}`;
+		}
+
+		function mapUncompletedRecords(recordsList) {
+			return `>${recordsList.map(record => ` ${record.demon.position > 150 ? record.demon.name : "**" + record.demon.name + "**"} (${record.progress}%)`)}`;
+		}
+
+		function mapDemons(demonsList) {
+			return `>${demonsList.map(demon => ` ${demon.position > 150 ? demon.name : "**" + demon.name + "**"}`)}`;
+		}
+
+		if (completedRecords.length > 0) {
+			infoEmbed.push(
+				new MessageEmbed()
+					.addField(`**${completedRecords.length}** demons completed`, mapRecords(completedRecords.slice(0, 45)), false)
+					.setColor("GREEN")
+			);
+			for (let i = 1; i < Math.ceil(completedRecords.length / 45); i++) {
+				const demons = completedRecords.slice(i * 45, (i + 1) * 45);
+				infoEmbed.push(
+					new MessageEmbed()
+						.setColor("GREEN")
+						.setDescription(mapRecords(demons))
+				)
+			}
+		}
+
+		if (uncompletedRecords.length > 0) {
+			infoEmbed.push(
+				new MessageEmbed()
+					.addField(`**${uncompletedRecords.length}** demons progressed`, mapUncompletedRecords(uncompletedRecords.slice(0, 45)), false)
+					.setColor("GREEN")
+			);
+			for (let i = 1; i < Math.ceil(uncompletedRecords.length / 45); i++) {
+				const demons = uncompletedRecords.slice(i * 45, (i + 1) * 45);
+				infoEmbed.push(
+					new MessageEmbed()
+						.setColor("GREEN")
+						.setDescription(mapUncompletedRecords(demons))
+				)
+			}
+		}
+
+		if (player.verified.length > 0) {
+			infoEmbed.push(
+				new MessageEmbed()
+					.addField(`**${player.verified.length}** demons verified`, mapDemons(player.verified.slice(0, 45)), false)
+					.setColor("GREEN")
+			);
+			for (let i = 1; i < Math.ceil(player.verified.length / 45); i++) {
+				const demons = player.verified.slice(i * 45, (i + 1) * 45);
+				infoEmbed.push(
+					new MessageEmbed()
+						.setColor("GREEN")
+						.setDescription(mapDemons(demons))
+				)
+			}
+		}
+
+		if (player.created.length > 0) {
+			infoEmbed.push(
+				new MessageEmbed()
+					.addField(`**${player.created.length}** demons created`, mapDemons(player.created.slice(0, 45)), false)
+					.setColor("GREEN")
+			);
+			for (let i = 1; i < Math.ceil(player.created.length / 45); i++) {
+				const demons = player.created.slice(i * 45, (i + 1) * 45);
+				infoEmbed.push(
+					new MessageEmbed()
+						.setColor("GREEN")
+						.setDescription(mapDemons(demons))
+				)
+			}
+		}
+
+		if (player.published.length > 0) {
+			infoEmbed.push(
+				new MessageEmbed()
+					.addField(`**${player.published.length}** demons published`, mapDemons(player.published.slice(0, 45)), false)
+					.setColor("GREEN")
+			);
+			for (let i = 1; i < Math.ceil(player.published.length / 45); i++) {
+				const demons = player.published.slice(i * 45, (i + 1) * 45);
+				infoEmbed.push(
+					new MessageEmbed()
+						.setColor("GREEN")
+						.setDescription(mapDemons(demons))
+				)
+			}
+		}
+
+		infoEmbed[infoEmbed.length - 1].setFooter({ text: `Viewing #${dataMin[0].rank} (Pointercrate ID: ${player.id})`, iconURL: "https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png" })
+			.setTimestamp();
+
 		return infoEmbed;
+	} catch (err) {
+		console.log(err);
+		interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
-
-	infoEmbed.addField(`Viewing **#${param.from + 1}**`, `${player.nationality == null? "" : ":flag_" + player.nationality.country_code.toLowerCase() + ":"} **${player.name}**`, false);
-	infoEmbed.addField(`Description`, `> *${gameData.description}*`, false);
-	infoEmbed.addField(`Downloads`, `${download} ${gameData.downloads}`, true);
-	infoEmbed.addField(`Likes`, `${gameData.disliked ? dislike : like} ${Math.abs(gameData.likes)}`, true);
-	infoEmbed.addField(`Length`, `${time} ${gameData.length}`, true);
-	infoEmbed.addField(`Coins`, `${gameData.coins == 0 ? unclearResult : (gameData.verifiedCoins ? silvercoin.repeat(gameData.coins) : bronzecoin.repeat(gameData.coins))}`, true);
-	infoEmbed.addField(`Requirement`, `${player.requirement}%`, false);
-	infoEmbed.addField(`Video`, `${player.video == null ? unclearResult : player.video}`, false);
-	infoEmbed.addField(`Verifier`, `${player.verifier.name}`, false);
-
-
-	infoEmbed.setFooter({ text: `Viewing #${player.position}`, iconURL: "https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png" });
-
-	return infoEmbed;
 }
 
 async function info(interaction) {
-	const from = interaction.options.getNumber('position') == null ? 0 :
-		(interaction.options.getNumber('position') - 1 < 0 ? 0 : interaction.options.getNumber('position') - 1);
+	try {
+		const from = interaction.options.getNumber('position') == null ? 0 :
+			(interaction.options.getNumber('position') - 1 < 0 ? 0 : interaction.options.getNumber('position') - 1);
 
-	const param = {
-		from: from,
-		limit: 1,
+		const param = {
+			from: from,
+			limit: 1,
+		}
+
+		const url = `https://pointercrate.com/api/v1/players/ranking?after=${param.from}&limit=${param.limit}`;
+
+		// boutta get those players
+
+		const result = await fetch(url)
+			.then(res => res.json())
+			.catch(err => console.log(err));
+
+		if (result) {
+			const playerURL = `https://pointercrate.com/api/v1/players/${result[0].id}`;
+
+			const detailed = await fetch(playerURL)
+				.then(res => res.json())
+				.catch(err => console.log(err));
+
+			return embed(interaction, param, result, detailed.data);
+		}
+
+		return embed(interaction, param, result, []), result[0].id;
+	} catch (err) {
+		console.log(err);
+		interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
 	}
-
-	const url = `https://pointercrate.com/api/v1/players/ranking?after=${param.from}&limit=${param.limit}`;
-
-	// boutta get those players
-
-	const result = await fetch(url)
-		.then(res => res.json())
-		.catch(err => err);
-
-	return [embed(interaction, param, result), result[0].id];
 }
 
 module.exports = {
@@ -76,23 +203,11 @@ module.exports = {
 	 * @param {{ reply: (arg0: { embeds: MessageEmbed[]; components: MessageActionRow[]; ephemeral: boolean; }) => any; }} interaction
 	 */
 	async execute(interaction) {
-		const viewButton = new MessageButton()
-			.setLabel('View this level!')
-			.setStyle('LINK')
-			.setEmoji(demonButton)
-
 		// @ts-ignore
 		await interaction.reply(`<@${interaction.user.id}> Working on it...`);
-		let result = await info(interaction); // Embed, Pointercrate ID
-
-		viewButton.setURL(`https://megarion.github.io/DemonlistBot/pointercrate.html?type=player&id=${result[1]}`);
-
-		const row = new MessageActionRow()
-			.addComponents(
-				viewButton
-			);
+		let result = await info(interaction); // Embed(s)
 
 		// @ts-ignore
-		await interaction.editReply({ content: "Done!", embeds: [result[0]], components: [row], ephemeral: false });
+		await interaction.editReply({ content: "Done!", embeds: result, components: [], ephemeral: false });
 	}
 };

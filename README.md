@@ -1,5 +1,5 @@
-# PlayerlistBot
-Utility bot to get information from the [Geometry Dash Playerlist](https://pointercrate.com/)
+# DemonlistBot
+Utility bot to get information from the [Geometry Dash Demonlist](https://pointercrate.com/)
 
 ## APIs used
 - [Pointercrate](https://pointercrate.com/documentation/index)
@@ -33,6 +33,21 @@ Utility bot to get information from the [Geometry Dash Playerlist](https://point
 		"nationality": {"country_code": "GB","nation": "United Kingdom","subdivision": null}
 	}
 ]
+```
+
+```
+{
+	"data":{
+		"banned": false,
+		"created": [],
+		"id": 1,
+		"name": "1amP1ay3R",
+		"nationality": null,
+		"published": [],
+		"records": [], 
+		"verified": []
+	}
+}
 ```
 
 **Pointercrate (records of a level)**
