@@ -13,8 +13,6 @@ function mapPlayers(arr) {
 
 function embed(interaction, param, data) {
 	try {
-		const timestamp = new Date().getTime();
-
 		const requestUser = interaction.user;
 
 		let infoEmbed = [];
@@ -59,16 +57,14 @@ function embed(interaction, param, data) {
 }
 
 async function info(interaction) {
-	const page = interaction.options.getNumber('page') == null ? 1 : interaction.options.getNumber('page');
 	const from = interaction.options.getNumber('from') == null ?
-		(interaction.options.getNumber('page') == null ? 0 : (page - 1) * 10) :
-		(interaction.options.getNumber('from') - 1 < 0 ? 0 : interaction.options.getNumber('from') - 1);
+		1 :
+		(interaction.options.getNumber('from') - 1 < 0 ? 1 : interaction.options.getNumber('from') - 1);
 	const count = interaction.options.getNumber('count') == null ? 10 :
 		(interaction.options.getNumber('count') > 30 ? 30 :
 			(interaction.options.getNumber('count') < 3 ? 3 : interaction.options.getNumber('count')));
 
 	const param = {
-		page: page,
 		from: from,
 		limit: count,
 	}
@@ -86,22 +82,17 @@ async function info(interaction) {
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('players')
+		.setName('player')
 		.setDescription('Get players from the leaderboard')
 		.addNumberOption(option =>
-			option.setName('page')
+			option.setName('from')
 				.setRequired(false)
-				.setDescription('Leaderboard page number')
+				.setDescription("Player position to start from")
 		)
 		.addNumberOption(option =>
 			option.setName('count')
 				.setRequired(false)
 				.setDescription("Number of players to get")
-		)
-		.addNumberOption(option =>
-			option.setName('from')
-				.setRequired(false)
-				.setDescription("Player position to start from (will be used)")
 		),
 
 	async execute(interaction) {

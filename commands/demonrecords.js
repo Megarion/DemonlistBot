@@ -13,8 +13,6 @@ function mapDemons(arr, s) {
 
 function embed(interaction, param, data, re) {
 	try {
-		const timestamp = new Date().getTime();
-
 		const requestUser = interaction.user;
 
 		let infoEmbed = [];
@@ -37,7 +35,7 @@ function embed(interaction, param, data, re) {
 		infoEmbed[0].setTitle(`Records for ${data[0].name}`);
 
 		infoEmbed[0].addField(`Viewing **#${(param.page - 1) * 10 + 1}** to **#${(param.page - 1) * 10 + records.length}**`,
-			mapDemons(records.slice(0, 5), 0)
+			mapDemons(records.slice(0, 5), (param.page - 1) * 10)
 			, false);
 		for (let i = 1; i < Math.ceil(records.length / 5); i++) {
 			const record = records.slice(i * 5, i * 5 + 5);
@@ -45,7 +43,7 @@ function embed(interaction, param, data, re) {
 				new MessageEmbed()
 					.setColor("YELLOW")
 					.setThumbnail("https://cdn.discordapp.com/attachments/955467433697746984/955713034972700682/blank.png")
-					.setDescription(mapDemons(record, i * 5))
+					.setDescription(mapDemons(record, (param.page - 1) * 10 + i * 5))
 			);
 		}
 
@@ -64,8 +62,8 @@ async function info(interaction) {
 	try {
 		const page = interaction.options.getNumber('page') == null ? 1 :
 			(interaction.options.getNumber('page') < 1 ? 1 : interaction.options.getNumber('page'));
-		const demon = interaction.options.getNumber('demon') == null ? 0 :
-			(interaction.options.getNumber('demon') - 1 < 0 ? 0 : interaction.options.getNumber('demon') - 1);
+		const demon = interaction.options.getNumber('position') == null ? 0 :
+			(interaction.options.getNumber('position') - 1 < 0 ? 1 : interaction.options.getNumber('position') - 1);
 
 		const param = {
 			page: page,
@@ -108,7 +106,7 @@ module.exports = {
 		.setName('demonrecords')
 		.setDescription('Get a demon\'s records')
 		.addNumberOption(option =>
-			option.setName('demon')
+			option.setName('position')
 				.setRequired(false)
 				.setDescription("Demon position")
 		)

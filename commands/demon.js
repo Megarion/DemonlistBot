@@ -13,8 +13,6 @@ function mapDemons(arr) {
 
 function embed(interaction, param, data) {
 	try {
-		const timestamp = new Date().getTime();
-
 		const requestUser = interaction.user;
 
 		let infoEmbed = [];
@@ -92,19 +90,14 @@ module.exports = {
 		.setName('demon')
 		.setDescription('Get demons from the list')
 		.addNumberOption(option =>
-			option.setName('page')
+			option.setName('from')
 				.setRequired(false)
-				.setDescription('List page number')
+				.setDescription("Demon position to start from")
 		)
 		.addNumberOption(option =>
 			option.setName('count')
 				.setRequired(false)
 				.setDescription("Number of demons to get")
-		)
-		.addNumberOption(option =>
-			option.setName('from')
-				.setRequired(false)
-				.setDescription("Demon position to start from (will be used)")
 		),
 
 	async execute(interaction) {

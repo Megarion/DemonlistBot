@@ -11,8 +11,6 @@ const { getYoutubeThumbnail } = require('../functions/youtubeThumbnail');
 
 function embed(interaction, param, dataMin, gameData, data) {
 	try {
-		const timestamp = new Date().getTime();
-
 		const requestUser = interaction.user;
 
 		const demon = data;

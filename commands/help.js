@@ -14,8 +14,6 @@ const { backtick, newline } = require("../data/text.json");
 
 function info(interaction) {
 	try {
-		const timestamp = new Date().getTime();
-
 		const requestUser = interaction.user;
 
 		const infoEmbed = new MessageEmbed()
@@ -26,8 +24,16 @@ function info(interaction) {
 			.setTimestamp()
 			.setFooter({ text: `Help information` });
 
-		// infoEmbed.addField('COMMANDS', "", false);
+		infoEmbed.addField('------------- COMMANDS -------------', "List of availible slash commands you can use:", false);
 
+		infoEmbed.addField(`${backtick}help${backtick}`, "Shows this help message", false);
+		infoEmbed.addField(`${backtick}demon <from> <count>${backtick}`, "Shows a list of top demons", false);
+		infoEmbed.addField(`${backtick}demoninfo <demonPosition>${backtick}`, "Shows more information about a demon", false);
+		infoEmbed.addField(`${backtick}demonrecords <demonPosition> <page>${backtick}`, "Shows the demon leaderboard", false);
+		infoEmbed.addField(`${backtick}player <from> <count>${backtick}`, "Shows a list of top players", false);
+		infoEmbed.addField(`${backtick}playerinfo <playerPosition>${backtick}`, "Shows more information about a player", false);
+		infoEmbed.addField(`${backtick}playerrecord <playerPosition> <demonPosition>${backtick}`, "Shows more information about a player's record", false);
+		
 		return infoEmbed;
 	} catch (err) {
 		console.log(err);

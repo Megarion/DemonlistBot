@@ -4,13 +4,11 @@ const { SlashCommandBuilder } = require('@discordjs/builders');
 const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { default: fetch } = require('node-fetch');
 
-const { trueResult, falseResult, unclearResult, backtick, newline } = require("../data/text.json");
-const { demonButton, top3, top5, top10, mainList, legacyList, extendedList, like, dislike, download, time, silvercoin, bronzecoin } = require('../data/emojis.json');
+const { unclearResult, backtick, newline } = require("../data/text.json");
+// const { } = require('../data/emojis.json');
 
 function embed(interaction, param, dataMin, data) {
 	try {
-		const timestamp = new Date().getTime();
-
 		const requestUser = interaction.user;
 
 		const player = data;
@@ -22,7 +20,6 @@ function embed(interaction, param, dataMin, data) {
 				.setAuthor({ name: `${requestUser.username}`, iconURL: requestUser.avatarURL() })
 				.setThumbnail('https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/difficulties/demon-extreme-epic.png')
 				.setColor("GREEN")
-				.setDescription(`Viewing player **#${param.from + 1}** ${player.banned ? `(:no_entry_sign: ${backtick}Banned${backtick})` : ""}`)
 		);
 
 		if (data.length == 0) {
@@ -30,6 +27,8 @@ function embed(interaction, param, dataMin, data) {
 				.setColor("RED");
 			return infoEmbed;
 		}
+
+		infoEmbed[0].setDescription(`Viewing player **#${param.from + 1}** ${player.banned ? `(:no_entry_sign: ${backtick}Banned${backtick})` : ""}`);
 
 		infoEmbed[0].addField(`Name`, `**${player.name}**`, true);
 		infoEmbed[0].addField(`List points`, `${dataMin[0].score.toFixed(2)}`, true);
@@ -39,10 +38,12 @@ function embed(interaction, param, dataMin, data) {
 		let uncompletedRecords = [];
 		for (let i = 0; i < player.records.length; i++) {
 			const record = player.records[i];
-			if (record.progress == 100) {
-				completedRecords.push(record);
-			} else {
-				uncompletedRecords.push(record);
+			if (record.status == "approved") {
+				if (record.progress == 100) {
+					completedRecords.push(record);
+				} else {
+					uncompletedRecords.push(record);
+				}
 			}
 		}
 
@@ -54,25 +55,25 @@ function embed(interaction, param, dataMin, data) {
 		uncompletedRecords = uncompletedRecords.reverse();
 
 		function mapRecords(recordsList) {
-			return `>${recordsList.map(record => ` ${record.demon.position > 150 ? record.demon.name : "**" + record.demon.name + "**"}`)}`;
+			return `>${recordsList.map(record => ` ${backtick}${record.demon.position}${backtick} ${record.demon.position > 150 ? record.demon.name : "**" + record.demon.name + "**"}`)}`;
 		}
 
 		function mapUncompletedRecords(recordsList) {
-			return `>${recordsList.map(record => ` ${record.demon.position > 150 ? record.demon.name : "**" + record.demon.name + "**"} (${record.progress}%)`)}`;
+			return `>${recordsList.map(record => ` ${backtick}${record.demon.position}${backtick} ${record.demon.position > 150 ? record.demon.name : "**" + record.demon.name + "**"} (${record.progress}%)`)}`;
 		}
 
 		function mapDemons(demonsList) {
-			return `>${demonsList.map(demon => ` ${demon.position > 150 ? demon.name : "**" + demon.name + "**"}`)}`;
+			return `>${demonsList.map(demon => ` ${backtick}${demon.position}${backtick} ${demon.position > 150 ? demon.name : "**" + demon.name + "**"}`)}`;
 		}
 
 		if (completedRecords.length > 0) {
 			infoEmbed.push(
 				new MessageEmbed()
-					.addField(`**${completedRecords.length}** demons completed`, mapRecords(completedRecords.slice(0, 45)), false)
+					.addField(`**${completedRecords.length}** demons completed`, mapRecords(completedRecords.slice(0, 40)), false)
 					.setColor("GREEN")
 			);
-			for (let i = 1; i < Math.ceil(completedRecords.length / 45); i++) {
-				const demons = completedRecords.slice(i * 45, (i + 1) * 45);
+			for (let i = 1; i < Math.ceil(completedRecords.length / 40); i++) {
+				const demons = completedRecords.slice(i * 40, (i + 1) * 40);
 				infoEmbed.push(
 					new MessageEmbed()
 						.setColor("GREEN")
@@ -84,11 +85,11 @@ function embed(interaction, param, dataMin, data) {
 		if (uncompletedRecords.length > 0) {
 			infoEmbed.push(
 				new MessageEmbed()
-					.addField(`**${uncompletedRecords.length}** demons progressed`, mapUncompletedRecords(uncompletedRecords.slice(0, 45)), false)
+					.addField(`**${uncompletedRecords.length}** demons progressed`, mapUncompletedRecords(uncompletedRecords.slice(0, 40)), false)
 					.setColor("GREEN")
 			);
-			for (let i = 1; i < Math.ceil(uncompletedRecords.length / 45); i++) {
-				const demons = uncompletedRecords.slice(i * 45, (i + 1) * 45);
+			for (let i = 1; i < Math.ceil(uncompletedRecords.length / 40); i++) {
+				const demons = uncompletedRecords.slice(i * 40, (i + 1) * 40);
 				infoEmbed.push(
 					new MessageEmbed()
 						.setColor("GREEN")
@@ -100,11 +101,11 @@ function embed(interaction, param, dataMin, data) {
 		if (player.verified.length > 0) {
 			infoEmbed.push(
 				new MessageEmbed()
-					.addField(`**${player.verified.length}** demons verified`, mapDemons(player.verified.slice(0, 45)), false)
+					.addField(`**${player.verified.length}** demons verified`, mapDemons(player.verified.slice(0, 40)), false)
 					.setColor("GREEN")
 			);
-			for (let i = 1; i < Math.ceil(player.verified.length / 45); i++) {
-				const demons = player.verified.slice(i * 45, (i + 1) * 45);
+			for (let i = 1; i < Math.ceil(player.verified.length / 40); i++) {
+				const demons = player.verified.slice(i * 40, (i + 1) * 40);
 				infoEmbed.push(
 					new MessageEmbed()
 						.setColor("GREEN")
@@ -116,11 +117,11 @@ function embed(interaction, param, dataMin, data) {
 		if (player.created.length > 0) {
 			infoEmbed.push(
 				new MessageEmbed()
-					.addField(`**${player.created.length}** demons created`, mapDemons(player.created.slice(0, 45)), false)
+					.addField(`**${player.created.length}** demons created`, mapDemons(player.created.slice(0, 40)), false)
 					.setColor("GREEN")
 			);
-			for (let i = 1; i < Math.ceil(player.created.length / 45); i++) {
-				const demons = player.created.slice(i * 45, (i + 1) * 45);
+			for (let i = 1; i < Math.ceil(player.created.length / 40); i++) {
+				const demons = player.created.slice(i * 40, (i + 1) * 40);
 				infoEmbed.push(
 					new MessageEmbed()
 						.setColor("GREEN")
@@ -132,11 +133,11 @@ function embed(interaction, param, dataMin, data) {
 		if (player.published.length > 0) {
 			infoEmbed.push(
 				new MessageEmbed()
-					.addField(`**${player.published.length}** demons published`, mapDemons(player.published.slice(0, 45)), false)
+					.addField(`**${player.published.length}** demons published`, mapDemons(player.published.slice(0, 40)), false)
 					.setColor("GREEN")
 			);
-			for (let i = 1; i < Math.ceil(player.published.length / 45); i++) {
-				const demons = player.published.slice(i * 45, (i + 1) * 45);
+			for (let i = 1; i < Math.ceil(player.published.length / 40); i++) {
+				const demons = player.published.slice(i * 40, (i + 1) * 40);
 				infoEmbed.push(
 					new MessageEmbed()
 						.setColor("GREEN")
@@ -157,8 +158,8 @@ function embed(interaction, param, dataMin, data) {
 
 async function info(interaction) {
 	try {
-		const from = interaction.options.getNumber('position') == null ? 0 :
-			(interaction.options.getNumber('position') - 1 < 0 ? 0 : interaction.options.getNumber('position') - 1);
+		const from = interaction.options.getNumber('position') == null ? 1 :
+			(interaction.options.getNumber('position') - 1 < 0 ? 1 : interaction.options.getNumber('position') - 1);
 
 		const param = {
 			from: from,
@@ -173,7 +174,7 @@ async function info(interaction) {
 			.then(res => res.json())
 			.catch(err => console.log(err));
 
-		if (result) {
+		if (result.length > 0) {
 			const playerURL = `https://pointercrate.com/api/v1/players/${result[0].id}`;
 
 			const detailed = await fetch(playerURL)
@@ -183,7 +184,7 @@ async function info(interaction) {
 			return embed(interaction, param, result, detailed.data);
 		}
 
-		return embed(interaction, param, result, []), result[0].id;
+		return embed(interaction, param, result, []);
 	} catch (err) {
 		console.log(err);
 		interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });

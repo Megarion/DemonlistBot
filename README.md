@@ -5,7 +5,7 @@ Utility bot to get information from the [Geometry Dash Demonlist](https://pointe
 - [Pointercrate](https://pointercrate.com/documentation/index)
 - [GDBrowser](https://gdbrowser.com/api)
 
-### Example Responses
+### Example Responses (normal form)
 **Pointercrate (levels)** `https://pointercrate.com/api/v2/demons/listed?after=<number>&limit=<number>`
 ```json
 [
@@ -33,21 +33,6 @@ Utility bot to get information from the [Geometry Dash Demonlist](https://pointe
 		"nationality": {"country_code": "GB","nation": "United Kingdom","subdivision": null}
 	}
 ]
-```
-
-```
-{
-	"data":{
-		"banned": false,
-		"created": [],
-		"id": 1,
-		"name": "1amP1ay3R",
-		"nationality": null,
-		"published": [],
-		"records": [], 
-		"verified": []
-	}
-}
 ```
 
 **Pointercrate (records of a level)**
