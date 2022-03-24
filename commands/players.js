@@ -5,10 +5,10 @@ const { MessageEmbed } = require('discord.js')
 const { default: fetch } = require('node-fetch');
 
 const { backtick, newline } = require("../data/text.json");
-const { top3, top5, top10, mainList, legacyList, extendedList } = require('../data/emojis.json');
+// const { } = require('../data/emojis.json');
 
-function mapDemons(arr) {
-	return arr.map(demon => `${backtick}#${demon.position}${backtick} ${demon.position < 4 ? top3 : (demon.position < 6 ? top5 : (demon.position < 11 ? top10 : (demon.position < 76 ? mainList : (demon.position < 151 ? extendedList : legacyList))))} **${demon.name}** - ${demon.publisher.name} (${demon.level_id})`).join(newline)
+function mapPlayers(arr) {
+	return arr.map(player => `${backtick}#${player.rank}${backtick} ${player.nationality == null? ":question:" : ":flag_" + player.nationality.country_code.toLowerCase() + ":"} **${player.name}** - ${player.score.toFixed(2)}`).join(newline)
 }
 
 function embed(interaction, param, data) {
@@ -16,61 +16,61 @@ function embed(interaction, param, data) {
 
 	const requestUser = interaction.user;
 
-	
-
 	let infoEmbed = [];
 
 	infoEmbed.push(
 		new MessageEmbed()
-			.setTitle("List demons")
+			.setTitle("List players")
 			.setAuthor({ name: `${requestUser.username}`, iconURL: requestUser.avatarURL() })
 			.setThumbnail('https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/trophies/1.png')
 			.setColor("YELLOW")
-			.setDescription(`Type ${backtick}/demoninfo <position>${backtick} to get more information about a demon.`)
+			.setDescription(`Type ${backtick}/playerinfo <position>${backtick} to get more information about a player.`)
 	);
 
 	if (data.length == 0) {
-		infoEmbed[0].setDescription(`Demon #${param.from + 1} doesn't exist!`)
+		infoEmbed[0].setDescription(`Player #${param.from + 1} doesn't exist!`)
 			.setColor("RED");
 		return infoEmbed;
 	}
 
 	infoEmbed[0].addField(`Viewing **#${param.from + 1}** to **#${param.from + data.length}**`,
-		mapDemons(data.slice(0, 10))
+		mapPlayers(data.slice(0, 10))
 		, false);
 	for (let i = 1; i < Math.ceil(data.length / 10); i++) {
-		const demon = data.slice(i * 10, i * 10 + 10);
+		const players = data.slice(i * 10, i * 10 + 10);
 		infoEmbed.push(
 			new MessageEmbed()
 				.setColor("YELLOW")
 				.setThumbnail("https://cdn.discordapp.com/attachments/955467433697746984/955713034972700682/blank.png")
-				.setDescription(mapDemons(demon))
+				.setDescription(mapPlayers(players))
 		);
 	}
 
 	infoEmbed[infoEmbed.length - 1]
-		.setFooter({ text: `Viewing ${data.length} demons`, iconURL: "https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png" })
+		.setFooter({ text: `Viewing ${data.length} players`, iconURL: "https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png" })
 		.setTimestamp();
 
 	return infoEmbed;
 }
 
 async function info(interaction) {
+	const page = interaction.options.getNumber('page') == null ? 1 : interaction.options.getNumber('page');
 	const from = interaction.options.getNumber('from') == null ?
-		1 :
+		(interaction.options.getNumber('page') == null ? 0 : (page - 1) * 10) :
 		(interaction.options.getNumber('from') - 1 < 0 ? 0 : interaction.options.getNumber('from') - 1);
 	const count = interaction.options.getNumber('count') == null ? 10 :
 		(interaction.options.getNumber('count') > 30 ? 30 :
 			(interaction.options.getNumber('count') < 3 ? 3 : interaction.options.getNumber('count')));
 
 	const param = {
+		page: page,
 		from: from,
 		limit: count,
 	}
 
-	const url = `https://pointercrate.com/api/v2/demons/listed?after=${param.from}&limit=${param.limit}`;
+	const url = `https://pointercrate.com/api/v1/players/ranking?after=${param.from}&limit=${param.limit}`;
 
-	// boutta get those demons
+	// boutta get those players
 
 	const result = await fetch(url)
 		.then(res => res.json())
@@ -81,22 +81,22 @@ async function info(interaction) {
 
 module.exports = {
 	data: new SlashCommandBuilder()
-		.setName('demon')
-		.setDescription('Get demons from the list')
+		.setName('players')
+		.setDescription('Get players from the leaderboard')
 		.addNumberOption(option =>
 			option.setName('page')
 				.setRequired(false)
-				.setDescription('List page number')
+				.setDescription('Leaderboard page number')
 		)
 		.addNumberOption(option =>
 			option.setName('count')
 				.setRequired(false)
-				.setDescription("Number of demons to get")
+				.setDescription("Number of players to get")
 		)
 		.addNumberOption(option =>
 			option.setName('from')
 				.setRequired(false)
-				.setDescription("Demon position to start from (will be used)")
+				.setDescription("Player position to start from (will be used)")
 		),
 
 	async execute(interaction) {

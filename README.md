@@ -1,5 +1,5 @@
-# DemonlistBot
-Utility bot to get information from the [Geometry Dash Demonlist](https://pointercrate.com/)
+# PlayerlistBot
+Utility bot to get information from the [Geometry Dash Playerlist](https://pointercrate.com/)
 
 ## APIs used
 - [Pointercrate](https://pointercrate.com/documentation/index)
@@ -10,15 +10,42 @@ Utility bot to get information from the [Geometry Dash Demonlist](https://pointe
 ```json
 [
     {
-        id: 379,
-        position: 3,
-        name: 'Firework',
-        requirement: 49,
-        video: 'https://www.youtube.com/watch?v=QBe5x2o9v2w',
-        publisher: { id: 36915, name: 'Trick', banned: false },
-        verifier: { id: 36915, name: 'Trick', banned: false },
-        level_id: 75206202
-    }
+		"id": 379,
+		"position": 3,
+		"name": "Firework",
+		"requirement": 49,
+		"video": "https://www.youtube.com/watch?v=QBe5x2o9v2w",
+		"publisher": {"id": 36915,"name": "Trick","banned": false},
+		"verifier": {"id": 36915,"name": "Trick","banned": false},
+		"level_id": 75206202
+	}
+]
+```
+
+**Pointercrate (players)** `https://pointercrate.com/api/v1/players/ranking?after=<number>&limit=<number>`
+```json
+[
+	{
+		"id": 35819,
+		"name": "spaceuk",
+		"rank": 1,
+		"score": 5698.915605877103,
+		"nationality": {"country_code": "GB","nation": "United Kingdom","subdivision": null}
+	}
+]
+```
+
+**Pointercrate (records of a level)**
+```json
+[
+	{
+		"id": 12672,
+		"nationality": {"country_code": "US", "nation": "United States", "subdivision":null},
+		"player": {"banned": false, "id": 575, "name": "Skulzi"},
+		"progress": 100,
+		"status": "approved",
+		"video": "https://www.youtube.com/watch?v=oo9ZYGJZCwk"
+	}
 ]
 ```
 
@@ -31,7 +58,7 @@ Utility bot to get information from the [Geometry Dash Demonlist](https://pointe
 	"author": "Zobros",
 	"playerID": "957447",
 	"accountID": "2379",
-	"difficulty": "Hard Demon",
+	"difficulty": "Hard Player",
 	"downloads": 30523740,
 	"likes": 1898461,
 	"disliked": false,

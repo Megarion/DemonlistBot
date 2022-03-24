@@ -1,7 +1,12 @@
 # FILES IGNORE
 # ------------------------------------------------------------------
+
+# Secret :)
 config.json
+
+# Editor configs
 .vscode/
+
 # ------------------------------------------------------------------
 
 # DEFAULT NODE GITIGNORE TEMPLATE
