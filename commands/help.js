@@ -17,7 +17,6 @@ function info(interaction) {
 		let today = new Date();
 		let d = today.getDate();
 		let m = today.getMonth() + 1;
-		console.log(d, m);
 
 		const infoEmbed = new MessageEmbed()
 			.setTitle("DemonlistBot")
