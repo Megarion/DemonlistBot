@@ -14,7 +14,10 @@ const { backtick, newline } = require("../data/text.json");
 
 function info(interaction) {
 	try {
-		const requestUser = interaction.user;
+		let today = new Date();
+		let d = today.getDate();
+		let m = today.getMonth() + 1;
+		console.log(d, m);
 
 		const infoEmbed = new MessageEmbed()
 			.setTitle("DemonlistBot")
@@ -23,6 +26,11 @@ function info(interaction) {
 			.setColor("BLUE")
 			.setTimestamp()
 			.setFooter({ text: `Help information` });
+
+		// April Fools
+		if (d == 1 && m == 4) {
+			infoEmbed.addField("April Fools!", "On every April Fools, the Demonlist will have changes to the levels!");
+		}
 
 		infoEmbed.addField('------------- COMMANDS -------------', "List of availible slash commands you can use:", false);
 

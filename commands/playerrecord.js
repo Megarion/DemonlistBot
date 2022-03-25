@@ -5,7 +5,7 @@ const { MessageEmbed, MessageActionRow, MessageButton } = require('discord.js');
 const { default: fetch } = require('node-fetch');
 
 const { backtick, newline } = require("../data/text.json");
-const { approved, rejected, under_consideration, submitted } = require('../data/emojis.json');
+const { approved, rejected, under_consideration, submitted, top3, top5, top10, mainList, extendedList, legacyList } = require('../data/emojis.json');
 
 const { getYoutubeThumbnail } = require("../functions/youtubeThumbnail.js");
 
@@ -43,7 +43,7 @@ function embed(interaction, param, dataMin, data) {
 			return infoEmbed;
 		}
 
-		infoEmbed.setDescription(`Viewing ${dataMin[0].name}'s record on ${chosenRecord.demon.name}`);
+		infoEmbed.setDescription(`Viewing ${dataMin[0].name}'s record on ${chosenRecord.demon.position < 4 ? top3 : (chosenRecord.demon.position < 6 ? top5 : (chosenRecord.demon.position < 11 ? top10 : (chosenRecord.demon.position < 76 ? mainList : (chosenRecord.demon.position < 151 ? extendedList : legacyList))))} ${chosenRecord.demon.name}`);
 
 		infoEmbed.setImage(getYoutubeThumbnail(chosenRecord.video));
 		infoEmbed.addField("Progress", `${chosenRecord.progress}%`, true);
