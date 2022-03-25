@@ -33,11 +33,11 @@ function info(interaction) {
 		infoEmbed.addField(`${backtick}player <from> <count>${backtick}`, "Shows a list of top players", false);
 		infoEmbed.addField(`${backtick}playerinfo <playerPosition>${backtick}`, "Shows more information about a player", false);
 		infoEmbed.addField(`${backtick}playerrecord <playerPosition> <demonPosition>${backtick}`, "Shows more information about a player's record", false);
-		
+
 		return infoEmbed;
 	} catch (err) {
 		console.log(err);
-		interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+		return undefined;
 	}
 }
 
