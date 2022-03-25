@@ -52,7 +52,7 @@ function embed(interaction, param, data) {
 		return infoEmbed;
 	} catch (err) {
 		console.log(err);
-		interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+		return undefined;
 	}
 }
 
@@ -81,7 +81,7 @@ async function info(interaction) {
 		return embed(interaction, param, result);
 	} catch (err) {
 		console.log(err);
-		interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+		return undefined;
 	}
 }
 
@@ -104,6 +104,10 @@ module.exports = {
 		// @ts-ignore
 		await interaction.reply(`<@${interaction.user.id}> Working on it...`);
 		let result = await info(interaction);
+		if (result == undefined) {
+			// @ts-ignore
+			await interaction.editReply({ content: ":x: An error occured!", embeds: [], components: [], ephemeral: false });
+		}
 		// @ts-ignore
 		await interaction.editReply({ content: "Done!", embeds: result, components: [], ephemeral: false });
 	}

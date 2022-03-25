@@ -31,7 +31,7 @@ function embed(interaction, param, dataMin, data) {
 
 		for (let i = 0; i < player.records.length; i++) {
 			const record = player.records[i];
-			if (record.demon.position == param.demon+1) {
+			if (record.demon.position == param.demon + 1) {
 				chosenRecord = record;
 				break;
 			}
@@ -56,7 +56,7 @@ function embed(interaction, param, dataMin, data) {
 		return infoEmbed;
 	} catch (err) {
 		console.log(err);
-		interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+		return undefined;
 	}
 }
 
@@ -95,7 +95,7 @@ async function info(interaction) {
 		return embed(interaction, param, result, null);
 	} catch (err) {
 		console.log(err);
-		interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+		return undefined;
 	}
 }
 
@@ -118,7 +118,11 @@ module.exports = {
 	async execute(interaction) {
 		// @ts-ignore
 		await interaction.reply(`<@${interaction.user.id}> Working on it...`);
-		let result = await info(interaction); // Embed(s)
+		let result = await info(interaction);
+		if (result == undefined) {
+			// @ts-ignore
+			await interaction.editReply({ content: ":x: An error occured!", embeds: [], components: [], ephemeral: false });
+		} // Embed(s)
 
 		// @ts-ignore
 		await interaction.editReply({ content: "Done!", embeds: [result], components: [], ephemeral: false });

@@ -49,7 +49,7 @@ function embed(interaction, param, dataMin, gameData, data) {
 		return infoEmbed;
 	} catch (err) {
 		console.log(err);
-		interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+		return undefined;
 	}
 }
 
@@ -92,7 +92,7 @@ async function info(interaction) {
 		}
 	} catch (err) {
 		console.log(err);
-		interaction.editReply({ content: 'There was an error while executing this command!', ephemeral: true });
+		return undefined;
 	}
 }
 
@@ -116,7 +116,11 @@ module.exports = {
 
 		// @ts-ignore
 		await interaction.reply(`<@${interaction.user.id}> Working on it...`);
-		let result = await info(interaction); // Embed, Pointercrate ID
+		let result = await info(interaction);
+		if (result == undefined) {
+			// @ts-ignore
+			await interaction.editReply({ content: ":x: An error occured!", embeds: [], components: [], ephemeral: false });
+		} // Embed, Pointercrate ID
 
 		if (result[1] != null) {
 			viewButton.setURL(`https://megarion.github.io/DemonlistBot/pointercrate.html?type=demon&id=${result[1]}`);
