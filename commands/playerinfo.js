@@ -55,7 +55,7 @@ function embed(interaction, param, dataMin, data) {
 		uncompletedRecords = uncompletedRecords.reverse();
 
 		function mapRecords(recordsList) {
-			return `>${recordsList.map(record => ` ${backtick}${record.demon.position}${backtick} ${record.demon.position > 150 ? record.demon.name : "**" + record.demon.name + "**"}`)}`;
+			return `>${recordsList.map(record => ` ${backtick}${record.demon.position}${backtick} ${record.demon.position > 75 ? (record.demon.position > 150? "*" + record.demon.name + "*" : record.demon.name) : "**" + record.demon.name + "**"}`)}`;
 		}
 
 		function mapUncompletedRecords(recordsList) {
