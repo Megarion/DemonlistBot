@@ -3,9 +3,9 @@ body {
     margin: 0;
     padding: 0;
     font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-    
+    cursor: default;
 }
-div {
+.box {
     width: 600px;
     margin: 5em auto;
     padding: 2em;
@@ -17,9 +17,69 @@ a:link, a:visited {
     color: #38488f;
     text-decoration: none;
 }
+
+button {
+    transition: 0.5s ease-in-out;
+    background-color: #4CAF50;
+    border-radius: 5px;
+    border: none;
+    color: white;
+    padding: 15px 62px;
+    text-align: center;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 30px;
+    margin: 20px;
+    font-family: -apple-system, system-ui, BlinkMacSystemFont, "Segoe UI", "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+button:hover {
+    transform: scale(1.15);
+}
+
 @media (max-width: 700px) {
     div {
         margin: 0 auto;
         width: auto;
     }
+}
+
+.main {
+    text-align: center;
+}
+
+.main div {
+    margin: 20px;
+    display: inline-block;
+    vertical-align: top
+}
+
+.main div img {
+    transition: 0.3s ease-in-out;
+    object-fit: cover;
+    width: 375px;
+    height: 500px;
+    margin: 10px;
+}
+
+.main div img:hover {
+    transform: scale(1.05);
+}
+
+.sub {
+    text-align: center; padding: 30px; background-color: #d6d6d6;
+}
+
+.sub img {
+    transition: 0.4s ease-in-out;
+}
+
+.sub img:hover {
+    transform: scale(1.1);
+}
+
+.line {
+    display: inline-block;
+    width: 80%;
+    border-top: 3px solid #8a8a8a;
 }

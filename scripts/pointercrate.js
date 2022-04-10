@@ -1,5 +1,4 @@
 // @ts-check
-
 const queryString = window.location.search;
 const urlParams = new URLSearchParams(queryString);
 const type = urlParams.get('type');
@@ -20,5 +19,6 @@ switch (type) {
         break;
 
     default:
+        document.getElementById("text").innerHTML = "Failed to redirect.";
         break;
 }
