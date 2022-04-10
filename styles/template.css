@@ -46,12 +46,25 @@ button:hover {
 
 .main {
     text-align: center;
+    margin: 50px 0px;
 }
 
 .main div {
     margin: 20px;
     display: inline-block;
-    vertical-align: top
+    vertical-align: top;
+    text-align: center;
+    margin: 0 auto;
+}
+
+.main div p {
+    width: 375px;
+    height: 30px;
+}
+
+.main .horizontal p {
+    width: 100%;
+    height: 30px;
 }
 
 .main div img {
@@ -62,12 +75,19 @@ button:hover {
     margin: 10px;
 }
 
+.main .horizontal img {
+    width: 500px;
+    height: 350px;
+}
+
 .main div img:hover {
     transform: scale(1.05);
 }
 
 .sub {
     text-align: center; padding: 30px; background-color: #d6d6d6;
+    -webkit-box-shadow: 0px 0px 16px 0px rgba(0,0,0,0.8); 
+    box-shadow: 0px 0px 16px 0px rgba(0,0,0,0.8);
 }
 
 .sub img {
