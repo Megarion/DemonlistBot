@@ -150,7 +150,7 @@ function embed(dataMin, data) {
 async function info(args) {
     const from = args == null ? 0 : ( !isNaN(Number(args))? 
         // @ts-ignore
-        (args-1 < 0? 0 : args) : 
+        (args-1 < 0? 0 : args-1) : 
         args
     )
 
@@ -164,14 +164,14 @@ async function info(args) {
     if (!isNaN(Number(param.from))) {
         const url = `https://pointercrate.com/api/v1/players/ranking?after=${param.from}&limit=${param.limit}`;
 
-        const result = await fetch(url)
+        result = await fetch(url)
             .then(res => res.json())
             .catch(err => console.log(err));
     } else {
         let list = [];
 
         // no while loops allowed (while loops are unbased)
-        for (let i = 0; i < 10; i++) {
+        for (let i = 0; i < 100; i++) {
             const url = `https://pointercrate.com/api/v1/players/ranking?after=${i*100}&limit=100`;
             let r = await fetch(url)
                 .then(res => res.json())

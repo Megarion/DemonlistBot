@@ -48,7 +48,7 @@ function embed(dataMin, gameData, data) {
 async function info(args) {
     const from = args == null ? 0 : ( !isNaN(Number(args))? 
         // @ts-ignore
-        (args-1 < 0? 0 : args) : 
+        (args-1 < 0? 0 : args-1) : 
         args
     )
 
