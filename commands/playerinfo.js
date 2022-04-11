@@ -158,8 +158,6 @@ async function info(args) {
 
     const url = `https://pointercrate.com/api/v1/players/ranking?after=${param.from}&limit=${param.limit}`;
 
-    // boutta get those players
-
     const result = await fetch(url)
         .then(res => res.json())
         .catch(err => console.log(err));
