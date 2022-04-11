@@ -148,9 +148,11 @@ function embed(dataMin, data) {
 }
 
 async function info(args) {
-    const from = args == null ? 0 : ( !isNaN(Number(args))? 
+    let error = false;
+
+    const from = args == null ? 0 : (!isNaN(Number(args)) ?
         // @ts-ignore
-        (args-1 < 0? 0 : args-1) : 
+        (args - 1 < 0 ? 0 : args - 1) :
         args
     )
 
@@ -166,16 +168,16 @@ async function info(args) {
 
         result = await fetch(url)
             .then(res => res.json())
-            .catch(err => console.log(err));
+            .catch(err => error = true);
     } else {
         let list = [];
 
         // no while loops allowed (while loops are unbased)
         for (let i = 0; i < 100; i++) {
-            const url = `https://pointercrate.com/api/v1/players/ranking?after=${i*100}&limit=100`;
+            const url = `https://pointercrate.com/api/v1/players/ranking?after=${i * 100}&limit=100`;
             let r = await fetch(url)
                 .then(res => res.json())
-                .catch(err => console.log(err));
+                .catch(err => error = true);
 
             // optimize
             if (r.length == 0) {
@@ -189,7 +191,11 @@ async function info(args) {
 
         // @ts-ignore
         let val = list.find(demon => demon.name.toLowerCase() == param.from.toLowerCase());
-        result = (val == undefined? [] : [val]);
+        result = (val == undefined ? [] : [val]);
+    }
+
+    if (error) {
+        return embed(result, []);
     }
 
     if (result.length > 0) {
@@ -197,7 +203,7 @@ async function info(args) {
 
         const detailed = await fetch(playerURL)
             .then(res => res.json())
-            .catch(err => console.log(err));
+            .catch(err => error = true);
 
         return embed(result, detailed.data);
     }
