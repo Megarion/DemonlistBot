@@ -50,6 +50,8 @@ function embed(param, data, re) {
 }
 
 async function info(args) {
+    let error = false;
+
     const page = args[1] == null ? 1 :
         ((isNaN(Number(args[1])) ? 1 : args[1]) < 1 ? 1 : (isNaN(Number(args[1])) ? 1 : args[1]));
     const demon = args[0] == null ? 0 :
@@ -65,9 +67,13 @@ async function info(args) {
 
     const result = await fetch(url)
         .then(res => res.json())
-        .catch(err => console.log(err));
+        .catch(err => error = true);
 
     let records;
+
+    if (error) {
+        return embed(param, result, records);
+    }
 
     if (result.length != 0) {
         const recordsURL = `https://pointercrate.com/api/v2/demons/${result[0].id}`;
@@ -76,7 +82,7 @@ async function info(args) {
 
         records = await fetch(recordsURL)
             .then(res => res.json())
-            .catch(err => console.log(err));
+            .catch(err => error = true);
     } else {
         records = [];
         return embed(param, result, records);

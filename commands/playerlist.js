@@ -47,6 +47,8 @@ function embed(param, data) {
 }
 
 async function info(args) {
+    let error = false;
+
     const from = args[0] == null ?
         0 :
         ((isNaN(Number(args[0])) ? 0 : args[0]) - 1 < 0 ? 1 : (isNaN(Number(args[0])) ? 0 : args[0]) - 1);
@@ -63,7 +65,11 @@ async function info(args) {
 
     const result = await fetch(url)
         .then(res => res.json())
-        .catch(err => console.log(err));
+        .catch(err => error = true);
+
+    if (error) {
+        return embed(param, []);
+    }
 
     return embed(param, result);
 }

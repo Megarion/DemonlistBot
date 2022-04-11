@@ -16,7 +16,7 @@ function embed(param, dataMin, data) {
         .setThumbnail('https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/difficulties/demon-extreme-epic.png')
         .setColor("GREEN")
 
-    if (data == null) {
+    if (data == null || dataMin.length == 0) {
         infoEmbed.setDescription(`Player **#${param.from + 1}** doesn't exist!`)
             .setColor("RED");
         return [infoEmbed];
@@ -52,6 +52,8 @@ function embed(param, dataMin, data) {
 }
 
 async function info(args) {
+    let error = false;
+
     const from = args[0] == null ? 1 :
         ((isNaN(Number(args[0])) ? 1 : args[0]) - 1 < 0 ? 1 : (isNaN(Number(args[0])) ? 1 : args[0]) - 1);
 
@@ -68,14 +70,18 @@ async function info(args) {
 
     const result = await fetch(url)
         .then(res => res.json())
-        .catch(err => console.log(err));
+        .catch(err => error = true);
+
+    if (error) {
+        return embed(param, [], null);
+    }
 
     if (result.length > 0) {
         const playerURL = `https://pointercrate.com/api/v1/players/${result[0].id}`;
 
         const detailed = await fetch(playerURL)
             .then(res => res.json())
-            .catch(err => console.log(err));
+            .catch(err => error = true);
 
         return embed(param, result, detailed.data);
     }

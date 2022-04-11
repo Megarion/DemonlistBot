@@ -46,9 +46,11 @@ function embed(dataMin, gameData, data) {
  * @param {any[]} args
  */
 async function info(args) {
-    const from = args == null ? 0 : ( !isNaN(Number(args))? 
+    let error = false;
+
+    const from = args == null ? 0 : (!isNaN(Number(args)) ?
         // @ts-ignore
-        (args-1 < 0? 0 : args) : 
+        (args - 1 < 0 ? 0 : args - 1) :
         args
     )
 
@@ -63,16 +65,16 @@ async function info(args) {
         const url = `https://pointercrate.com/api/v2/demons/listed?after=${param.from}&limit=${param.limit}`;
         result = await fetch(url)
             .then(res => res.json())
-            .catch(err => console.log(err));
+            .catch(err => error = true);
     } else {
         let list = [];
 
         // no while loops allowed (while loops are unbased)
         for (let i = 0; i < 10; i++) {
-            const url = `https://pointercrate.com/api/v2/demons/listed?after=${i*100}&limit=100`;
+            const url = `https://pointercrate.com/api/v2/demons/listed?after=${i * 100}&limit=100`;
             let r = await fetch(url)
                 .then(res => res.json())
-                .catch(err => console.log(err));
+                .catch(err => error = true);
 
             // optimize
             if (r.length == 0) {
@@ -86,7 +88,11 @@ async function info(args) {
 
         // @ts-ignore
         let val = list.find(demon => demon.name.toLowerCase() == param.from.toLowerCase());
-        result = (val == undefined? [] : [val]);
+        result = (val == undefined ? [] : [val]);
+    }
+
+    if (error) {
+        return [embed([], null, null), null, null];
     }
 
     if (result.length != 0) {
@@ -96,17 +102,17 @@ async function info(args) {
 
         const inGame = await fetch(inGameURL)
             .then(res => res.json())
-            .catch(err => console.log(err));
+            .catch(err => error = true);
 
         const detailedURL = `https://pointercrate.com/api/v2/demons/${result[0].id}`
 
         const detailed = await fetch(detailedURL)
             .then(res => res.json())
-            .catch(err => console.log(err));
+            .catch(err => error = true);
 
         return [embed(result, inGame, detailed.data), result[0].id, result[0].video];
     } else {
-        return [embed(result, null, null), null, null];
+        return [embed([], null, null), null, null];
     }
 }
 
@@ -151,6 +157,6 @@ module.exports = {
             v = true;
         }
 
-        reply.edit({ content: "Done!", embeds: result[0], components: v? [row] : [], ephemeral: false });
+        reply.edit({ content: "Done!", embeds: result[0], components: v ? [row] : [], ephemeral: false });
     }
 };
