@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Changelog</title>
+    <meta charset="UTF-8">
+    <meta content="DemonlistBot changelog" property="og:title">
+    <meta content="The DemonlistBot's changelog" property="og:description">
+
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta name="description" content="content">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    
+
+    <link rel="stylesheet" href="styles/template.css">
+
+    <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png">
+</head>
+<body>
+    <div class="sub">
+        <img 
+            src="https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png" 
+            style="vertical-align: middle;"
+            width="155px"
+            height="155px"
+        >
+        <h1 style="font-size: 50px; margin: 20px;">Changelog</h1>
+        <p>Date format: <strong>DD/MM/YYYY</strong></p>
+    </div>
+
+    <div class="main" id="changelog">
+        <!-- Generated using script -->
+    </div>
+
+    <script>
+        // @ts-check
+        class Item {
+            constructor(version /* [1, 0, 0]] */, date /* [DD,MM,YYYY]] */, changes /* [change, change, change] */) {
+                this.version = version.join('.');
+                this.date = date.join('/');
+                this.changes = "- " + changes.join('<br>- ');
+            }
+
+            html() {
+                return `
+                    <span>
+                        <h1>${this.version}</h1>
+                        <h2>${this.date}</h2>
+                        <p>${this.changes}</p>
+                    </span>
+                `;
+            }
+        };
+
+        let changelog = [
+            new Item([1, 0, 1], [11, 4, 2022], [
+                "Added searching by name! (for demoninfo and playerinfo)",
+                "Fixed Error 400 (pointercrate)",
+            ]),
+            new Item([1, 0, 0], [10, 4, 2022], [
+                "<strong>7 commands:</strong> demoninfo, demonlist, demonrecord, help, playerinfo, playerlist, playerrecord",
+                "Information taken from Pointercrate API and GDBrowser API",
+            ])
+        ];
+
+        document.getElementById('changelog').innerHTML = changelog.map(item => item.html()).join("<span class='line'></span>");
+    </script>
+</body>
+</html>
