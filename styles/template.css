@@ -1,3 +1,4 @@
+/* code from template */
 body {
     background-color: #f0f0f2;
     margin: 0;
@@ -17,6 +18,14 @@ a:link, a:visited {
     color: #38488f;
     text-decoration: none;
 }
+@media (max-width: 700px) {
+    div {
+        margin: 0 auto;
+        width: auto;
+    }
+}
+
+/* stuff i added in */
 
 button {
     transition: 0.5s ease-in-out;
@@ -35,13 +44,6 @@ button {
 
 button:hover {
     transform: scale(1.15);
-}
-
-@media (max-width: 700px) {
-    div {
-        margin: 0 auto;
-        width: auto;
-    }
 }
 
 .main {
@@ -105,4 +107,11 @@ button:hover {
     display: inline-block;
     width: 80%;
     border-top: 3px solid #8a8a8a;
+}
+
+@media (max-width: 530px) {
+    .main .horizontal img {
+        width: 375px;
+        height: 500px;
+    }
 }
