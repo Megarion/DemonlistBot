@@ -63,8 +63,6 @@ async function info(args) {
 
     const url = `https://pointercrate.com/api/v2/demons/listed?after=${param.from}&limit=${param.limit}`;
 
-    // boutta get those demons
-
     const result = await fetch(url)
         .then(res => res.json())
         .catch(err => console.log(err));
@@ -90,7 +88,7 @@ async function info(args) {
 module.exports = {
     name: "demonrecord",
     aliases: ["dr", "demonrecords"],
-    argsName: ["demon", "page"],
+    argsName: ["demon_pos", "page"],
     description: "Get a demon's records",
     async execute(message, args) {
         const reply = await message.reply("Working on it...");

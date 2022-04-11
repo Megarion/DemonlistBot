@@ -2,7 +2,7 @@
 
 const fs = require('fs');
 const { Client, Collection, Intents } = require('discord.js');
-const { prefix, token } = require('./config.json');
+const { prefix, token, testToken } = require('./config.json');
 const { backtick } = require('./data/text.json');
 
 const client = new Client({ intents: [Intents.FLAGS.GUILDS, Intents.FLAGS.GUILD_MESSAGES] });
@@ -61,4 +61,4 @@ client.on('messageCreate', message => {
 	}
 });
 
-client.login(token);
+client.login(testToken);

@@ -8,7 +8,7 @@ const { play, demonButton, top3, top5, top10, mainList, legacyList, extendedList
 
 const { getYoutubeThumbnail } = require('../functions/youtubeThumbnail');
 
-function embed(param, dataMin, gameData, data) {
+function embed(dataMin, gameData, data) {
     const demon = data;
 
     const infoEmbed = new MessageEmbed()
@@ -18,14 +18,14 @@ function embed(param, dataMin, gameData, data) {
         .setTimestamp()
 
     if (dataMin.length == 0) {
-        infoEmbed.setDescription(`Demon **#${param.from + 1}** doesn't exist!`)
+        infoEmbed.setDescription(`Demon doesn't exist!`)
             .setColor("RED");
         return [infoEmbed];
     }
 
     infoEmbed.setImage(getYoutubeThumbnail(demon.video));
 
-    infoEmbed.addField(`Viewing **#${param.from + 1}**`, `${demon.position < 4 ? top3 : (demon.position < 6 ? top5 : (demon.position < 11 ? top10 : (demon.position < 76 ? mainList : (demon.position < 151 ? extendedList : legacyList))))} **${demon.name}** - ${demon.publisher.name}`, false);
+    infoEmbed.addField(`Viewing **#${demon.position}**`, `${demon.position < 4 ? top3 : (demon.position < 6 ? top5 : (demon.position < 11 ? top10 : (demon.position < 76 ? mainList : (demon.position < 151 ? extendedList : legacyList))))} **${demon.name}** - ${demon.publisher.name}`, false);
 
     infoEmbed.addField(`Description`, `> *${gameData.description}*`, true);
     infoEmbed.addField(`Creators`, `> ${data.creators.map(creator => ` ${creator.name}`)}`, true);
@@ -46,20 +46,48 @@ function embed(param, dataMin, gameData, data) {
  * @param {any[]} args
  */
 async function info(args) {
-    const from = args[0] == null ? 0 : ((isNaN(Number(args[0])) ? 0 : args[0]) - 1 < 0 ? 0 : (isNaN(Number(args[0])) ? 0 : args[0]) - 1);
+    const from = args == null ? 0 : ( !isNaN(Number(args))? 
+        // @ts-ignore
+        (args-1 < 0? 0 : args) : 
+        args
+    )
 
     const param = {
         from: from,
         limit: 1,
     }
 
-    const url = `https://pointercrate.com/api/v2/demons/listed?after=${param.from}&limit=${param.limit}`;
+    let result;
 
-    // boutta get those demons
+    if (!isNaN(Number(param.from))) {
+        const url = `https://pointercrate.com/api/v2/demons/listed?after=${param.from}&limit=${param.limit}`;
+        result = await fetch(url)
+            .then(res => res.json())
+            .catch(err => console.log(err));
+    } else {
+        let list = [];
 
-    const result = await fetch(url)
-        .then(res => res.json())
-        .catch(err => console.log(err));
+        // no while loops allowed (while loops are unbased)
+        for (let i = 0; i < 10; i++) {
+            const url = `https://pointercrate.com/api/v2/demons/listed?after=${i*100}&limit=100`;
+            let r = await fetch(url)
+                .then(res => res.json())
+                .catch(err => console.log(err));
+
+            // optimize
+            if (r.length == 0) {
+                break;
+            }
+
+            for (let j = 0; j < r.length; j++) {
+                list.push(r[j]);
+            }
+        }
+
+        // @ts-ignore
+        let val = list.find(demon => demon.name.toLowerCase() == param.from.toLowerCase());
+        result = (val == undefined? [] : [val]);
+    }
 
     if (result.length != 0) {
         const inGameURL = `https://gdbrowser.com/api/level/${result[0].level_id}`;
@@ -76,16 +104,16 @@ async function info(args) {
             .then(res => res.json())
             .catch(err => console.log(err));
 
-        return [embed(param, result, inGame, detailed.data), result[0].id, result[0].video];
+        return [embed(result, inGame, detailed.data), result[0].id, result[0].video];
     } else {
-        return [embed(param, result, null, null), null, null];
+        return [embed(result, null, null), null, null];
     }
 }
 
 module.exports = {
     name: "demoninfo",
-    aliases: ["demon", "d"],
-    argsName: ["position"],
+    aliases: ["demon", "d", "di"],
+    argsName: ["demon"],
     description: "Get a demon's information from the list",
     async execute(message, args) {
         const reply = await message.reply("Working on it...");
@@ -94,7 +122,7 @@ module.exports = {
             args.push(null);
         }
 
-        let result = await info(args);
+        let result = await info(args.join(" "));
 
         const row = new MessageActionRow();
         let v = false;

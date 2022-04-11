@@ -66,8 +66,6 @@ async function info(args) {
 
     const url = `https://pointercrate.com/api/v1/players/ranking?after=${param.from}&limit=${param.limit}`;
 
-    // boutta get those players
-
     const result = await fetch(url)
         .then(res => res.json())
         .catch(err => console.log(err));
@@ -88,7 +86,7 @@ async function info(args) {
 module.exports = {
     name: "playerrecord",
     aliases: ["pr", "playerrecordinfo"],
-    argsName: ["player", "demon"],
+    argsName: ["player_pos", "demon_pos"],
     description: "Get a player's record on a demon",
     async execute(message, args) {
         const reply = await message.reply("Working on it...");
