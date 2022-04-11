@@ -8,7 +8,7 @@ const { play, demonButton, top3, top5, top10, mainList, legacyList, extendedList
 
 const { getYoutubeThumbnail } = require('../functions/youtubeThumbnail');
 
-function embed(param, dataMin, gameData, data) {
+function embed(dataMin, gameData, data) {
     const demon = data;
 
     const infoEmbed = new MessageEmbed()
@@ -46,9 +46,10 @@ function embed(param, dataMin, gameData, data) {
  * @param {any[]} args
  */
 async function info(args) {
-    const from = args[0] == null ? 0 : ( !isNaN(Number(args[0]))? 
-        (args[0]-1 < 0? 0 : args[0]) : 
-        args[0]
+    const from = args == null ? 0 : ( !isNaN(Number(args))? 
+        // @ts-ignore
+        (args-1 < 0? 0 : args) : 
+        args
     )
 
     const param = {
@@ -83,9 +84,9 @@ async function info(args) {
             }
         }
 
+        // @ts-ignore
         let val = list.find(demon => demon.name.toLowerCase() == param.from.toLowerCase());
         result = (val == undefined? [] : [val]);
-        console.log(result);
     }
 
     if (result.length != 0) {
@@ -103,16 +104,16 @@ async function info(args) {
             .then(res => res.json())
             .catch(err => console.log(err));
 
-        return [embed(param, result, inGame, detailed.data), result[0].id, result[0].video];
+        return [embed(result, inGame, detailed.data), result[0].id, result[0].video];
     } else {
-        return [embed(param, result, null, null), null, null];
+        return [embed(result, null, null), null, null];
     }
 }
 
 module.exports = {
     name: "demoninfo",
     aliases: ["demon", "d", "di"],
-    argsName: ["position"],
+    argsName: ["demon"],
     description: "Get a demon's information from the list",
     async execute(message, args) {
         const reply = await message.reply("Working on it...");
@@ -121,7 +122,7 @@ module.exports = {
             args.push(null);
         }
 
-        let result = await info(args);
+        let result = await info(args.join(" "));
 
         const row = new MessageActionRow();
         let v = false;

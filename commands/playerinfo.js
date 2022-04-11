@@ -6,7 +6,7 @@ const { default: fetch } = require('node-fetch');
 const { newline, backtick, unclearResult } = require("../data/text.json");
 // const { } = require('../data/emojis.json');
 
-function embed(param, dataMin, data) {
+function embed(dataMin, data) {
     const player = data;
 
     const infoEmbed = [];
@@ -18,12 +18,12 @@ function embed(param, dataMin, data) {
     );
 
     if (data.length == 0) {
-        infoEmbed[0].setDescription(`Player **#${param.from + 1}** doesn't exist!`)
+        infoEmbed[0].setDescription(`Player doesn't exist!`)
             .setColor("RED");
         return infoEmbed;
     }
 
-    infoEmbed[0].setDescription(`Viewing player **#${param.from + 1}** ${player.banned ? `(:no_entry_sign: ${backtick}Banned${backtick})` : ""}`);
+    infoEmbed[0].setDescription(`Viewing player **#${dataMin[0].rank}** ${player.banned ? `(:no_entry_sign: ${backtick}Banned${backtick})` : ""}`);
 
     infoEmbed[0].addField(`Name`, `**${player.name}**`, true);
     infoEmbed[0].addField(`List points`, `${dataMin[0].score.toFixed(2)}`, true);
@@ -148,19 +148,49 @@ function embed(param, dataMin, data) {
 }
 
 async function info(args) {
-    const from = args[0] == null ? 1 :
-        ((isNaN(Number(args[0])) ? 1 : args[0]) - 1 < 0 ? 1 : (isNaN(Number(args[0])) ? 1 : args[0]) - 1);
+    const from = args == null ? 0 : ( !isNaN(Number(args))? 
+        // @ts-ignore
+        (args-1 < 0? 0 : args) : 
+        args
+    )
 
     const param = {
         from: from,
         limit: 1,
     }
 
-    const url = `https://pointercrate.com/api/v1/players/ranking?after=${param.from}&limit=${param.limit}`;
+    let result;
 
-    const result = await fetch(url)
-        .then(res => res.json())
-        .catch(err => console.log(err));
+    if (!isNaN(Number(param.from))) {
+        const url = `https://pointercrate.com/api/v1/players/ranking?after=${param.from}&limit=${param.limit}`;
+
+        const result = await fetch(url)
+            .then(res => res.json())
+            .catch(err => console.log(err));
+    } else {
+        let list = [];
+
+        // no while loops allowed (while loops are unbased)
+        for (let i = 0; i < 10; i++) {
+            const url = `https://pointercrate.com/api/v1/players/ranking?after=${i*100}&limit=100`;
+            let r = await fetch(url)
+                .then(res => res.json())
+                .catch(err => console.log(err));
+
+            // optimize
+            if (r.length == 0) {
+                break;
+            }
+
+            for (let j = 0; j < r.length; j++) {
+                list.push(r[j]);
+            }
+        }
+
+        // @ts-ignore
+        let val = list.find(demon => demon.name.toLowerCase() == param.from.toLowerCase());
+        result = (val == undefined? [] : [val]);
+    }
 
     if (result.length > 0) {
         const playerURL = `https://pointercrate.com/api/v1/players/${result[0].id}`;
@@ -169,16 +199,16 @@ async function info(args) {
             .then(res => res.json())
             .catch(err => console.log(err));
 
-        return embed(param, result, detailed.data);
+        return embed(result, detailed.data);
     }
 
-    return embed(param, result, []);
+    return embed(result, []);
 }
 
 module.exports = {
     name: "playerinfo",
     aliases: ["p", "pi", "player"],
-    argsName: ["position"],
+    argsName: ["player"],
     description: "Get a player's information from the list",
     async execute(message, args) {
         const reply = await message.reply("Working on it...");
@@ -187,7 +217,7 @@ module.exports = {
             args.push(null);
         }
 
-        let result = await info(args);
+        let result = await info(args.join(" "));
 
         reply.edit({ content: "Done!", embeds: result, components: [], ephemeral: false });
     }

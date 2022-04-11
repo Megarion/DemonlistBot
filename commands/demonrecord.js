@@ -88,7 +88,7 @@ async function info(args) {
 module.exports = {
     name: "demonrecord",
     aliases: ["dr", "demonrecords"],
-    argsName: ["demon", "page"],
+    argsName: ["demon_pos", "page"],
     description: "Get a demon's records",
     async execute(message, args) {
         const reply = await message.reply("Working on it...");
