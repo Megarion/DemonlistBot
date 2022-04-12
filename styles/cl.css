@@ -1,0 +1,17 @@
+.pop {
+    width: 100%;
+}
+
+.pop h1 {
+    transition: 0.3s ease-in-out;
+    -webkit-box-shadow: 7px 7px 10px -2px rgba(0,0,0,0.78); 
+    box-shadow: 7px 7px 10px -2px rgba(0,0,0,0.78);
+    width: 30%;
+    margin: 0 auto;
+
+    background-color: #e0e0e0;
+}
+
+.pop h1:hover {
+    transform: scale(1.1);
+}

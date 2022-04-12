@@ -13,6 +13,8 @@
     
 
     <link rel="stylesheet" href="styles/template.css">
+    <link rel="stylesheet" href="styles/main.css">
+    <link rel="stylesheet" href="styles/cl.css">
 
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png">
 </head>
@@ -44,7 +46,9 @@
             html() {
                 return `
                     <span>
-                        <h1>${this.version}</h1>
+                        <span class="pop">
+                            <h1>${this.version}</h1>
+                        </span>
                         <h2>${this.date}</h2>
                         <p>${this.changes}</p>
                     </span>
