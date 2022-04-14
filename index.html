@@ -21,6 +21,16 @@
     <link rel="icon" type="image/x-icon" href="https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png">
 </head>
 <body>
+    <div class="imgPopup">
+        <img id="closePopup" src="assets/xmark-solid.png">
+        <div class="content">
+            <img 
+                src="https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png"
+                style="max-width: calc(100vw - 40px); max-height: calc(100vh - 40px); width: auto; height: auto;"
+            >
+        </div>
+    </div>
+
     <div class="sub">
         <img 
             src="https://raw.githubusercontent.com/GDColon/GDBrowser/master/assets/demonleaderboard.png" 
@@ -37,17 +47,17 @@
         <div>
             <h2>Convenient</h2>
             <p>Comes in handy when you want to take a look at the Demonlist</p>
-            <img src="assets/screenshot001.png">
+            <img src="assets/screenshot001.png" class="imgInspect">
         </div>
         <div>
             <h2>Practical</h2>
             <p>Simple and easy-to-use commands</p>
-            <img src="assets/screenshot000.png">
+            <img src="assets/screenshot000.png" class="imgInspect">
         </div>
         <div>
             <h2>Informative</h2>
             <p>Provides a variety of useful infomation</p>
-            <img src="assets/screenshot002.png">
+            <img src="assets/screenshot002.png" class="imgInspect">
         </div>
 
         <span class='line'></span>
@@ -55,8 +65,8 @@
         <div class="horizontal">
             <h2>Featureful</h2>
             <p>Lots of features and commands availible</p>
-            <img src="assets/screenshot003.png">
-            <img src="assets/screenshot004.png">
+            <img src="assets/screenshot003.png" class="imgInspect">
+            <img src="assets/screenshot004.png" class="imgInspect">
         </div>
     </div>
 
@@ -66,5 +76,8 @@
         &copy; 2022 <a href="https://megarion.github.io/" target="_blank">Megarion</a> | Megarion#0892<br>
         Thanks to <a href="https://pointercrate.com/demonlist/" target="_blank">Pointercrate</a> and <a href="https://gdbrowser.com/" target="_blank">GDBrowser</a>
     </div>
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
+    <script src="js/index.js"></script>
 </body>
 </html>

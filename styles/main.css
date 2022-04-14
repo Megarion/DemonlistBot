@@ -50,6 +50,29 @@
     transform: scale(1.1);
 }
 
+.imgPopup {
+    position: fixed;
+
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.658);
+}
+
+.imgPopup .content {
+    display: flex;
+
+    justify-content: center;
+    align-items: center;
+
+    width: calc(100vw - 40px); 
+    height: calc(100vh - 40px);
+
+    padding: 20px;
+}
+
+.imgPopup #closePopup {
+    width: 40px; height: auto; position: absolute; left: 15px;
+}
+
 @media (max-width: 530px) {
     .main .horizontal img {
         width: 375px;
