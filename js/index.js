@@ -1,14 +1,5 @@
-// @ts-check
-
-// Initialize
-$("body").hide();
-$(".imgPopup").hide();
-
 // Main code
 jQuery(function() {
-    // Start
-    $("body").fadeIn(1000);
-
     $("img").on("click", function() {
         if ($(this).hasClass("imgInspect")) {
             $(".imgPopup").fadeIn(100);
