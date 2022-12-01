@@ -1,4 +1,4 @@
-# DemonlistBot
+# DemonlistBot [DEPRECATED]
 Utility bot to get information from the [Geometry Dash Demonlist](https://pointercrate.com/)
 
 ## APIs used
