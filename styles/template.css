@@ -26,6 +26,9 @@ a:link, a:visited {
 }
 
 /* stuff i added in */
+.warning:link, .warning:visited {
+    color: #f8a4a4;
+}
 
 button {
     transition: 0.5s ease-in-out;
